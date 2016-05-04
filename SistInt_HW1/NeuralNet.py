@@ -48,25 +48,32 @@ class NeuralNetwork(object):
           
 class Neuron (object):
 
-     def __init__(self,inputSize,X,W,bias):
-          # setup the neuron here;          
-          self.output=[];
-          self.in=inputSize;
-          self.Xn=X;
-          self.Wn=W;
-          self.B=bias;
-          
-     def sumInputs(self):
-          # take all of the inputs and sum them together;
-          return self.output;
-          
-     def sigmoid(self):
-          # defining the sigmoid function which alllows output to be 
-          # to be seen as a normalized 1 or -1 output;
-          
-          return 0;
-          
-     def stepOutput(self,desiredInput):
-          # function defining the step output;
-          # if sigmoid is not used, than step may be used;
-          return 0;
+    def __init__(self,inputSize,X,W,bias):
+        # setup the neuron here;          
+        self.output=[];
+        self.input=inputSize;
+        self.Xn=X;
+        self.Wn=W;
+        self.B=bias;
+    
+    def sumInputs(self):
+        # take all of the inputs and sum them together;
+        return self.output;
+    
+    def sigmoid(self):
+        # defining the sigmoid function which alllows output to be 
+        # to be seen as a normalized 1 or -1 output;
+    
+        return 0;
+    
+    def stepOutput(self,desiredInput):
+        # function defining the step output;
+        # if sigmoid is not used, than step may be used;
+        return 0;
+    
+    
+    
+    
+    
+    
+    
