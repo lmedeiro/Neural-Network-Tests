@@ -1,12 +1,20 @@
 import numpy as np;
-import matplotlib.pyplot as plt;
 
 
 a=np.arange(0,100);
 #a.shape;
 
-print ("working");
-print (a);
-plt.plot(a,a);
+#print ("working");
+#print (a);
+#plt.plot(a,a);
 
-plt.show();
+#plt.show();
+
+a=[];
+a.append(1);
+b=2;
+c=3;
+a=[a,b];
+a=[a,c];
+print (a);
+

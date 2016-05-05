@@ -26,15 +26,27 @@
           imgSIZE=28*28;
 
 '''
+from ImageColor import str2int
 
 class MNISTReader(object):
     
     def __init__(self):
         self.fileIN=[];
         self.finalFile=[];
+        self.header=[];
+        self.labels=[];
+        self.images=[];
         
-    def readFile(self,filePathName):
+    def readFile(self):
         # takes care of reading the file;
+        f=open('images/train-labels.idx1-ubyte','r');
+        self.header.append(f.read(4));
+        self.header.append(f.read(3));
+        self.labels.append(f.read(1));
+        print(self.header);
+        
+        
+        f.close();
         return 0;
     
     def processFile(self,fileToProcess):
@@ -43,3 +55,12 @@ class MNISTReader(object):
         # it is then up to the Neural Net to change it accordingly;
         
         return self.finalFile;
+    
+A=MNISTReader();
+A.readFile();
+h1=A.header[0];
+h2=int(h1.encode('hex'),16)
+h3=int(A.labels[0].encode('hex'),16);
+print (h2);
+print (h3);
+#print(type(h1[1]));

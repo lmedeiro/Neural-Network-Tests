@@ -40,21 +40,54 @@ The algorithm for this simple, backpropagation, perceptron based NN is as follow
 # sigmoid function is: y=1/(1+np.e(-z));
 # sigmoid prime: np.exp(-z)/((1+np.exp(-z))**2);
 
+import numpy as np;
+#from scipy import optimize;
 
 class NeuralNetwork(object):
-     # This is the constructor;
-     
-     def __init__(self,X=0):
-          print("Constructor called;");
+    # This is the constructor;
+    
+    def __init__(self,X=0):
+        print("Constructor called;");
+        self.bias=1;
+        if X==None or X==0:
+            print("X=0 or NONE");
+        else:
+            print(X);
+        
+    
+    def feedForward(self,X):
+        # Must feed information forward;
+        return 0;
+    
+    def feedBack (self,error):
+        # will feed the error;
+        return 0;
+    
+    
+    
           
-     def feedForward(self,X):
-          # Must feed informaiton forward;
+class Trainer(object):
+    
+    def __init__(self,trainingSamples,paramEpochs):
+        self.tSamples=trainingSamples;
+        self.epochs=paramEpochs;
+    
+    '''
+     this function will take care of the training;
+     feeding information backward, analyzing error,
+    '''
+         
+    def train(self):
+        
+        
+        return 0;
+        
+        
+       
           
           
           
-          
-          
-class Neuron (object):
+class Neuron(object):
 
     def __init__(self,inputSize,X,W,bias):
         # setup the neuron here;          
@@ -66,22 +99,31 @@ class Neuron (object):
     
     def sumInputs(self):
         # take all of the inputs and sum them together;
+        self.output=np.dot(self.Xn,self.Wn);
+        self.output=self.output+self.B;
         return self.output;
     
-    def sigmoid(self):
+    def sigmoid(self,g):
         # defining the sigmoid function which alllows output to be 
         # to be seen as a normalized 1 or -1 output;
-        # 
+        y=1/(1+np.e(-g));
     
-        return 0;
+        return y;
     
     def stepOutput(self,desiredInput):
         # function defining the step output;
         # if sigmoid is not used, than step may be used;
         return 0;
     
+    def processInfo(self):
+        # process everything here;
+        Yout=self.sumInputs();
+        yFinal=self.sigmoid(Yout);
+        return yFinal;
     
-    
+
+N=NeuralNetwork([2,3,4]);    
+print ("working");    
     
     
     
