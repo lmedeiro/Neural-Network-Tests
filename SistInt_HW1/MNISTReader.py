@@ -3,7 +3,7 @@
     
     Below is the code in Matlab: 
          fidLabel=fopen('train-labels.idx1-ubyte','r','b');
-          header=fread(fidLabel,2,'uint32')
+          labelHeader=fread(fidLabel,2,'uint32')
           numberOfImagesToGet=100;
           testLabels=fread(fidLabel,numberOfImagesToGet,'uint8');
           
@@ -13,7 +13,7 @@
           
           %clear,close all,clc;
           fid=fopen('train-images.idx3-ubyte','r','b');
-          headerIMG=fread(fid,4,'uint32');
+          labelHeaderIMG=fread(fid,4,'uint32');
           
           imgMultiplier=28*28*numberOfImagesToGet;
           testIMGs=fread(fid,imgMultiplier,'uint8');
@@ -26,27 +26,69 @@
           imgSIZE=28*28;
 
 '''
-from ImageColor import str2int
 
+import numpy as np;
 class MNISTReader(object):
     
     def __init__(self):
         self.fileIN=[];
         self.finalFile=[];
-        self.header=[];
+        self.labelHeader=[];
+        self.imgHeader=[];
+        self.rawIMG='';
+        self.imgs=np.array([]);
+        self.rawLabels='';
         self.labels=[];
         self.images=[];
         
     def readFile(self):
         # takes care of reading the file;
         f=open('images/train-labels.idx1-ubyte','r');
-        self.header.append(f.read(4));
-        self.header.append(f.read(3));
-        self.labels.append(f.read(1));
-        print(self.header);
+        #print (f.tell());
+        self.labelHeader.append(f.read(4));
+        self.labelHeader.append(f.read(4));
+        #self.labels.append(f.read(1));
+        #print (f.tell());
+        # Setting the labelHeaders to readable characters;
+        self.labelHeader[0]=int(self.labelHeader[0].encode('hex'),16);
+        self.labelHeader[1]=int(self.labelHeader[1].encode('hex'),16);
+        
+        self.rawLabels=(f.read(-1)); #read until end of file;
+        
+        # set labels to integer values;
+        
+        k=0;
+        while (k<len(self.rawLabels)):
+            
+            self.labels.append(int(self.rawLabels[k].encode('hex'),16));
+            k=k+1;
+            
         
         
         f.close();
+        imgFile=open('images/train-images.idx3-ubyte','r');
+        
+        
+        
+        n=0;
+        print(n);
+        # Setting the imgHeaders to readable characters;
+        k=0;
+        while k<4:
+            
+            self.imgHeader.append(imgFile.read(4));
+            #print(k);
+            self.imgHeader[k]=int(self.imgHeader[k].encode('hex'),16);
+            k=k+1;
+            
+        n=imgFile.tell();
+        print(n);
+        #print (f.tell());
+        #self.rawIMG=f.read(-1);
+        #print (f.tell());
+        
+        
+        imgFile.close();
         return 0;
     
     def processFile(self,fileToProcess):
@@ -56,11 +98,14 @@ class MNISTReader(object):
         
         return self.finalFile;
     
+    
+# testing the above code: 
+
 A=MNISTReader();
 A.readFile();
-h1=A.header[0];
-h2=int(h1.encode('hex'),16)
-h3=int(A.labels[0].encode('hex'),16);
-print (h2);
-print (h3);
-#print(type(h1[1]));
+h1=A.labelHeader;
+#h2=int(h1.encode('hex'),16)
+#h3=int(A.labels[0].encode('hex'),16);
+#print (h1);
+
+print ((A.imgHeader));
