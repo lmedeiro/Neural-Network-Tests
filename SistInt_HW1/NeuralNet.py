@@ -35,6 +35,10 @@ The algorithm for this simple, backpropagation, perceptron based NN is as follow
      
 
 '''
+# Must remember to normalize the values;
+# for example the input: X=X/np.amax(X,axis=0);
+# sigmoid function is: y=1/(1+np.e(-z));
+# sigmoid prime: np.exp(-z)/((1+np.exp(-z))**2);
 
 
 class NeuralNetwork(object):
@@ -42,6 +46,10 @@ class NeuralNetwork(object):
      
      def __init__(self,X=0):
           print("Constructor called;");
+          
+     def feedForward(self,X):
+          # Must feed informaiton forward;
+          
           
           
           
@@ -63,6 +71,7 @@ class Neuron (object):
     def sigmoid(self):
         # defining the sigmoid function which alllows output to be 
         # to be seen as a normalized 1 or -1 output;
+        # 
     
         return 0;
     
