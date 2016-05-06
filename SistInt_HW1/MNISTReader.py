@@ -29,12 +29,13 @@
 
 import numpy as np;
 import matplotlib.pyplot as plt;
-#from matplotlib.pyplot import *;
+#import threading;
 import time;
 
 class MNISTReader(object):
     
     def __init__(self):
+        #threading.Thread.__init__(self);
         self.fileIN=[];
         self.finalFile=[];
         self.labelHeader=[];
@@ -92,18 +93,20 @@ class MNISTReader(object):
         imgFile.close();
         #-------------------------------------------------
         
-        self.processImgArray();
+        #self.processImgArray();
         
         return 0;
     
-    
+    # Returns numpy array;
     # ImgArray: complete array with imgs. This may be a list;
     # numImgs: number of expected images within that array;
         #Threads will use this to separate the file into separate imgs;
     # imgSize: Size of each img;
-    def processImgArray(self,imgArray=None,numImgs=100,imgSize=784):
+    
+    def processImgArray(self,imgArray=None,numImgs=1,imgSize=784):
         # process the file and then return the processed file
-        
+        if imgArray==None:
+            imgArray=self.rawIMG;
         k=0;
       
         t = time.time()
@@ -111,28 +114,54 @@ class MNISTReader(object):
         
         # loop initially taking in one image;
         # size= 28*28=784;
-        
+        images=[];
+        imagesNP=np.array([],np.uint8);
         while (k<numImgs*imgSize):
         
-            self.images.append(int(self.rawIMG[k].encode('hex'),16));
+            images.append(int(imgArray[k].encode('hex'),16));
             k=k+1;
         
-        self.imgs=np.append(self.imgs, self.images);
+        imagesNP=np.append(images, self.images);
         
         elapsed = time.time() - t;
         
         print ("elapsed time %f"%elapsed);
         
         
-        return self.finalFile;
+        return imagesNP;
     
     
+    
+    def encodeImgWithThreads(self,numberOfThreads=1,imgArray=None,numImgs=1,imgSize=784):
+        if numImgs==1 or numberOfThreads==1:
+            return self.processImgArray(imgArray, numImgs, imgSize);
+        from threading import Thread;
+        threads=[];
+        dataChunk=numImgs/numberOfThreads; # setting how much data each 
+        # thread is going to process;
+        k=0;
+        imgChunks=[];
+        imgPositions=[];
+        # need to better define these parameters so to make the thread run 
+        # properly;
+        # each thread should take care of a portion of the img array;
+        # once this portion is taken care of, we need to have a pointer to link 
+        # and stitch the img properly into the numpy array;
+        # This should be done with the name parameter of the thread;
+        # that way we know what each thread processed (encoded);
+        while k<numberOfThreads:
+            threads.append(Thread(target=self.processImgArray,name=k,(imgArray, numImgs, imgSize)));
+            
+        
+        return 0;
+   
 # testing the above code: 
 
 A=MNISTReader();
 A.readFile();
 print(A.imgs.shape);
-img=A.imgs;
+img=A.processImgArray();
+#img=A.encodeImgWithThreads();
 #img.shape=(28,28);
 #plt.imshow(img,cmap='gray');
 #plt.show();
