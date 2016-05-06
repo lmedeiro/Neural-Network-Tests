@@ -28,6 +28,10 @@
 '''
 
 import numpy as np;
+import matplotlib.pyplot as plt;
+#from matplotlib.pyplot import *;
+import time;
+
 class MNISTReader(object):
     
     def __init__(self):
@@ -35,10 +39,11 @@ class MNISTReader(object):
         self.finalFile=[];
         self.labelHeader=[];
         self.imgHeader=[];
-        self.rawIMG='';
+        #self.rawIMG='';
         self.imgs=np.array([],np.uint8);
         self.rawLabels='';
         self.labels=[];
+        self.images=[];
         
         
     def readFile(self):
@@ -84,23 +89,31 @@ class MNISTReader(object):
         
         self.rawIMG=imgFile.read(-1);
        
-        #print(imgFile.tell());
+        #print(len(self.rawIMG));
         
         imgFile.close();
         
         k=0;
       
+        t = time.time()
+        # do stuff
         
         # loop initially taking in one image;
         # size= 28*28=784;
         
-        while (k<784):
+        while (k<1*784):
             
-            self.imgs=np.append(self.imgs,int(self.rawIMG[k].encode('hex'),16));
+            #self.imgs=np.append(self.imgs,int(self.rawIMG[k].encode('hex'),16));
+            self.images.append(int(self.rawIMG[k].encode('hex'),16));
             k=k+1;
         
-        print(self.imgs.size);
-        print(self.imgs);
+        self.imgs=np.append(self.imgs, self.images);
+        
+        elapsed = time.time() - t;
+        
+        print ("elapsed time %f"%elapsed);
+        #print(self.imgs.size);
+        #print(self.imgs);
         
         return 0;
     
@@ -116,5 +129,9 @@ class MNISTReader(object):
 
 A=MNISTReader();
 A.readFile();
-
+print(A.imgs.shape);
+img=A.imgs;
+img.shape=(28,28);
+plt.imshow(img,cmap='gray');
+plt.show();
 
