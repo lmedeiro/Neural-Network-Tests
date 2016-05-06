@@ -36,19 +36,18 @@ class MNISTReader(object):
         self.labelHeader=[];
         self.imgHeader=[];
         self.rawIMG='';
-        self.imgs=np.array([]);
+        self.imgs=np.array([],np.uint8);
         self.rawLabels='';
         self.labels=[];
-        self.images=[];
+        
         
     def readFile(self):
         # takes care of reading the file;
         f=open('images/train-labels.idx1-ubyte','r');
-        #print (f.tell());
+        
         self.labelHeader.append(f.read(4));
         self.labelHeader.append(f.read(4));
-        #self.labels.append(f.read(1));
-        #print (f.tell());
+        
         # Setting the labelHeaders to readable characters;
         self.labelHeader[0]=int(self.labelHeader[0].encode('hex'),16);
         self.labelHeader[1]=int(self.labelHeader[1].encode('hex'),16);
@@ -66,14 +65,13 @@ class MNISTReader(object):
         
         
         f.close();
-        imgFile=open('images/train-images.idx3-ubyte','r');
+        # open the img test file;
+        imgFile=open('images/train-images.idx3-ubyte','rb');
         
-        
-        
-        n=0;
-        print(n);
         # Setting the imgHeaders to readable characters;
         k=0;
+        
+        #print(imgFile.tell());
         while k<4:
             
             self.imgHeader.append(imgFile.read(4));
@@ -81,14 +79,29 @@ class MNISTReader(object):
             self.imgHeader[k]=int(self.imgHeader[k].encode('hex'),16);
             k=k+1;
             
-        n=imgFile.tell();
-        print(n);
-        #print (f.tell());
-        #self.rawIMG=f.read(-1);
-        #print (f.tell());
         
+        #print(imgFile.tell());
+        
+        self.rawIMG=imgFile.read(-1);
+       
+        #print(imgFile.tell());
         
         imgFile.close();
+        
+        k=0;
+      
+        
+        # loop initially taking in one image;
+        # size= 28*28=784;
+        
+        while (k<784):
+            
+            self.imgs=np.append(self.imgs,int(self.rawIMG[k].encode('hex'),16));
+            k=k+1;
+        
+        print(self.imgs.size);
+        print(self.imgs);
+        
         return 0;
     
     def processFile(self,fileToProcess):
@@ -103,9 +116,5 @@ class MNISTReader(object):
 
 A=MNISTReader();
 A.readFile();
-h1=A.labelHeader;
-#h2=int(h1.encode('hex'),16)
-#h3=int(A.labels[0].encode('hex'),16);
-#print (h1);
 
-print ((A.imgHeader));
+

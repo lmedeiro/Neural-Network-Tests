@@ -1,20 +1,14 @@
 import numpy as np;
 
 
-a=np.arange(0,100);
-#a.shape;
+a=np.array([],np.uint8);
 
-#print ("working");
-#print (a);
-#plt.plot(a,a);
+#a=np.append(a,[1,2,3]);
 
-#plt.show();
-
-a=[];
-a.append(1);
-b=2;
-c=3;
-a=[a,b];
-a=[a,c];
 print (a);
 
+a=np.append(a,1);
+a=np.append(a,2);
+print (a);
+print (a.shape)
+print(a.size);
