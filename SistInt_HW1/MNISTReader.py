@@ -73,25 +73,36 @@ class MNISTReader(object):
         # open the img test file;
         imgFile=open('images/train-images.idx3-ubyte','rb');
         
+        #-------------------------------------------------
         # Setting the imgHeaders to readable characters;
+        #-------------------------------------------------
         k=0;
         
-        #print(imgFile.tell());
+        
         while k<4:
             
             self.imgHeader.append(imgFile.read(4));
             #print(k);
             self.imgHeader[k]=int(self.imgHeader[k].encode('hex'),16);
             k=k+1;
-            
-        
-        #print(imgFile.tell());
-        
+        #-------------------------------------------------
+        # Reading the rest of the information as img bytes;
         self.rawIMG=imgFile.read(-1);
-       
-        #print(len(self.rawIMG));
         
         imgFile.close();
+        #-------------------------------------------------
+        
+        self.processImgArray();
+        
+        return 0;
+    
+    
+    # ImgArray: complete array with imgs. This may be a list;
+    # numImgs: number of expected images within that array;
+        #Threads will use this to separate the file into separate imgs;
+    # imgSize: Size of each img;
+    def processImgArray(self,imgArray=None,numImgs=100,imgSize=784):
+        # process the file and then return the processed file
         
         k=0;
       
@@ -101,9 +112,8 @@ class MNISTReader(object):
         # loop initially taking in one image;
         # size= 28*28=784;
         
-        while (k<1*784):
-            
-            #self.imgs=np.append(self.imgs,int(self.rawIMG[k].encode('hex'),16));
+        while (k<numImgs*imgSize):
+        
             self.images.append(int(self.rawIMG[k].encode('hex'),16));
             k=k+1;
         
@@ -112,15 +122,7 @@ class MNISTReader(object):
         elapsed = time.time() - t;
         
         print ("elapsed time %f"%elapsed);
-        #print(self.imgs.size);
-        #print(self.imgs);
         
-        return 0;
-    
-    def processFile(self,fileToProcess):
-        # process the file and then return the processed file as
-        # a single array;
-        # it is then up to the Neural Net to change it accordingly;
         
         return self.finalFile;
     
@@ -131,7 +133,7 @@ A=MNISTReader();
 A.readFile();
 print(A.imgs.shape);
 img=A.imgs;
-img.shape=(28,28);
-plt.imshow(img,cmap='gray');
-plt.show();
+#img.shape=(28,28);
+#plt.imshow(img,cmap='gray');
+#plt.show();
 
