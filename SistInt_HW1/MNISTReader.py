@@ -139,6 +139,9 @@ class MNISTReader(object):
     # imgSize: Size of each img;
     # it seems that the number of threads is affecting the number of 
     # images being stored; Must check this properly;
+    #Since the program is at least working and reading up to a few thousand images without
+    # taking too long, start testing;
+    
     def encodeImgWithThreads(self,numberOfThreads=1,numImgs=1,imgArray=None,imgSize=784):
         if numImgs==1 or numberOfThreads==1:
             return self.processImgArray(imgArray, numImgs, imgSize);
