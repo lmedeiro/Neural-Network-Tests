@@ -30,6 +30,7 @@
 import numpy as np;
 import matplotlib.pyplot as plt;
 #import threading;
+from threading import Thread;
 import time;
 
 class MNISTReader(object):
@@ -45,6 +46,7 @@ class MNISTReader(object):
         self.rawLabels='';
         self.labels=[];
         self.images=[];
+        self.position=[];
         
         
     def readFile(self):
@@ -109,39 +111,52 @@ class MNISTReader(object):
             imgArray=self.rawIMG;
         k=0;
       
-        t = time.time()
+        #t = time.time()
         # do stuff
         
         # loop initially taking in one image;
         # size= 28*28=784;
         images=[];
-        imagesNP=np.array([],np.uint8);
+        #imagesNP=np.array([],np.uint8);
         while (k<numImgs*imgSize):
         
             images.append(int(imgArray[k].encode('hex'),16));
             k=k+1;
         
-        imagesNP=np.append(images, self.images);
+        self.imgs=np.append(self.imgs,images);
         
-        elapsed = time.time() - t;
+        #elapsed = time.time() - t;
         
-        print ("elapsed time %f"%elapsed);
+        #print ("elapsed time %f"%elapsed);
         
         
-        return imagesNP;
+        return self.imgs;
     
-    
-    
-    def encodeImgWithThreads(self,numberOfThreads=1,imgArray=None,numImgs=1,imgSize=784):
+    # Returns numpy array;
+    # ImgArray: complete array with imgs. This may be a list;
+    # numImgs: number of expected images within that array;
+        #Threads will use this to separate the file into separate imgs;
+    # imgSize: Size of each img;
+    # it seems that the number of threads is affecting the number of 
+    # images being stored; Must check this properly;
+    def encodeImgWithThreads(self,numberOfThreads=1,numImgs=1,imgArray=None,imgSize=784):
         if numImgs==1 or numberOfThreads==1:
             return self.processImgArray(imgArray, numImgs, imgSize);
-        from threading import Thread;
+        #from threading import Thread;
         threads=[];
-        dataChunk=numImgs/numberOfThreads; # setting how much data each 
+        imgArray=self.rawIMG[0:numImgs*imgSize];
+        print("length of raw img array %d"%len(imgArray));
+        #dataChunk=numImgs/numberOfThreads; # setting how much data each 
         # thread is going to process;
         k=0;
+        imgChunkPositions=[];
         imgChunks=[];
-        imgPositions=[];
+        while k<numberOfThreads:
+            imgChunks.append(imgArray[(k*numImgs*imgSize)/numberOfThreads:((k+1)*numImgs*imgSize)/numberOfThreads]);
+            imgChunkPositions.append((k*numImgs*imgSize)/numberOfThreads);
+            k=k+1;
+        
+        #print(imgChunkPositions);
         # need to better define these parameters so to make the thread run 
         # properly;
         # each thread should take care of a portion of the img array;
@@ -149,20 +164,47 @@ class MNISTReader(object):
         # and stitch the img properly into the numpy array;
         # This should be done with the name parameter of the thread;
         # that way we know what each thread processed (encoded);
+        k=0;
+        a=0;
+        numberOfimages=len(imgChunks[k])/imgSize;
         while k<numberOfThreads:
-            threads.append(Thread(target=self.processImgArray,name=k,(imgArray, numImgs, imgSize)));
-            
+            #print("number of images= %d"%(len(imgChunks[k])/imgSize));
+            a=Thread(target=self.processImgArray,name=k,args=(imgChunks[k], numberOfimages, imgSize));
+            a.start();
+            threads.append(a);
+            #threads[k].start();
+            #print(threads[k].name);
+            #threads[k].join();
+            k=k+1;
         
-        return 0;
-   
+        k=0;
+        #threading.Lock();
+        while k<numberOfThreads:
+            threads[k].join();
+            
+            k=k+1;
+       
+
+        return self.imgs;
+        # Remember that k basically associates the chunks in order;
 # testing the above code: 
 
 A=MNISTReader();
 A.readFile();
-print(A.imgs.shape);
-img=A.processImgArray();
-#img=A.encodeImgWithThreads();
-#img.shape=(28,28);
-#plt.imshow(img,cmap='gray');
-#plt.show();
+#print(A.imgs.shape);
+
+print("length of imgs: %d"%len(A.imgs));
+t = time.time()
+imgs=A.processImgArray(numImgs=1000);
+#imgs=A.encodeImgWithThreads(numberOfThreads=2,numImgs=1000);
+
+elapsed = time.time() - t;
+
+print ("elapsed time %f"%elapsed);
+print("length of imgs: %d"%len(A.imgs));
+print("length of imgs: %d"%len(imgs));
+img=imgs[998*28*28:999*28*28];
+img.shape=(28,28);
+plt.imshow(img,cmap='gray');
+plt.show();
 
