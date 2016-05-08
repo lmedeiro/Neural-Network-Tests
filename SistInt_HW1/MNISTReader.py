@@ -35,27 +35,25 @@ import time;
 class MNISTReader(object):
     
     def __init__(self):
-        #threading.Thread.__init__(self);
-        self.fileIN=[];
-        self.finalFile=[];
         self.labelHeader=[];
         self.imgHeader=[];
-        #self.rawIMG='';
+
         self.imgs=np.array([],np.uint8);
         self.rawLabels='';
         self.labels=[];
-        self.images=[];
-        self.position=[];
+
         
         
     def readFile(self):
-        # takes care of reading the file;
+        # takes care of reading the file and setting everything
+        # to its proper array;
         f=open('images/train-labels.idx1-ubyte','r');
         
         self.labelHeader.append(f.read(4));
         self.labelHeader.append(f.read(4));
         
         # Setting the labelHeaders to readable characters;
+        
         self.labelHeader[0]=int(self.labelHeader[0].encode('hex'),16);
         self.labelHeader[1]=int(self.labelHeader[1].encode('hex'),16);
         
@@ -68,10 +66,9 @@ class MNISTReader(object):
             
             self.labels.append(int(self.rawLabels[k].encode('hex'),16));
             k=k+1;
-            
-        
-        
+
         f.close();
+        
         # open the img test file;
         imgFile=open('images/train-images.idx3-ubyte','rb');
         
@@ -98,12 +95,7 @@ class MNISTReader(object):
         
         return self.processImgArray();
     
-    # Returns numpy array;
-    # ImgArray: complete array with imgs. This may be a list;
-    # numImgs: number of expected images within that array;
-        #Threads will use this to separate the file into separate imgs;
-    # imgSize: Size of each img;
-    
+    # Returns numpy array with imgs;
     def processImgArray(self):
         # process the file and then return the processed file
         
@@ -112,17 +104,16 @@ class MNISTReader(object):
         
         return self.imgs;
 
+
+#-------------------------------------------------
+#    Area to test the class;
+#-------------------------------------------------
+
 t = time.time()
 A=MNISTReader();
-
-
 imgs=A.readFile();
-
-
 elapsed = time.time() - t;
-
 print ("elapsed time %f"%elapsed);
-
 print("length of imgs: %d"%len(imgs));
 img=imgs[59999*28*28:60000*28*28];
 img.shape=(28,28);
