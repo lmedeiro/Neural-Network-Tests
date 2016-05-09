@@ -48,24 +48,20 @@ from threading import Thread;
 class NeuralNetwork(object):
     # This is the constructor;
     
-    def __init__(self):
+    def __init__(self,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         print("NeuralNetwork Constructor called;");
-        
-        
-        
-        
-    
-    def feedForward(self,X,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
-        # Must feed information forward;
-        self.Xn=X;
+        self.neuronN=[];
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
         
-        self.neuronN=[];
-        
-        for _ in range(numberOfNeuronsPerLayer):
+        for _ in range(self.numberOfNeuronsPerLayer):
             self.neuronN.append(Neuron());
-        
         print(" number of neuron: %d"%len(self.neuronN));
+    
+    def feedForward(self,X):
+        # Must feed information forward;
+        self.Xn=X;
+        
+        
         t=[];
         
         for r in range(self.numberOfNeuronsPerLayer):
@@ -74,8 +70,8 @@ class NeuralNetwork(object):
         
         
         
-        #for item in t:
-        #    item.join();
+        for item in t:
+            item.join();
         
         
         return self.neuronN;

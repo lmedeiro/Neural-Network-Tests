@@ -19,7 +19,9 @@ plt.show();
 A=MNISTReader.MNISTReader();
 imgs=A.readFile();
 NN=NeuralNet.NeuralNetwork();
-NN.feedForward(imgs);
+for k in range(5000):
+    NN.feedForward(imgs[k*784:(k+1)*784]);
+#NN.feedForward(imgs);
 print("Ending main Thread" );
 #neuronOutputs=NN.neuronN[1];
 #print(neuronOutputs);
