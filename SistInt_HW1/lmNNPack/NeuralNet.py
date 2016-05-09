@@ -57,14 +57,14 @@ class NeuralNetwork(object):
     def feedForward(self,X,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         # Must feed information forward;
         self.Xn=X;
-        #self.Xn=self.Xn.T;
         # Wn= weights for each input;
         # Wn will be different for each neuron that is at its end;
         # The weight themselves will vary between the different 
         # layers. Thus, we will have have varying numbers per layer;
         # To begin, only one layer will be executed. Once this base case is 
         # mastered, N layers will be adapted on the code. 
-        self.Wn=np.random.randn(X.size,numberOfNeuronsPerLayer)*.01;
+        self.Wn=np.random.randn(X.size,numberOfNeuronsPerLayer)*.1;
+        self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
         #print(" shape of Wn" );
         #print(self.Wn.shape);
         #print("shape of Xn");
@@ -73,6 +73,7 @@ class NeuralNetwork(object):
         # bias will be denoted as N=number of Neurons per layer -> Rows;
         # vs M= number of hidden layers -> columns;
         self.bias=np.random.randn(numberOfNeuronsPerLayer);
+        self.bias=np.absolute(self.bias);
         
         for k in range(numberOfNeuronsPerLayer):
             self.neuronN.append(Neuron(self.Xn,self.Wn[:,k],self.bias[k]))

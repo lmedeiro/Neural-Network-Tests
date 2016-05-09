@@ -14,8 +14,13 @@ class Neuron(object):
         # take all of the inputs and sum them together;
         #print(np.transpose(self.Wn[0:20]));
         #print(self.Xn[100:120]);
-        self.output=np.array(np.dot(self.Xn,np.transpose(self.Wn)));
-        print(self.output.shape);
+        self.output=np.vdot(self.Xn,self.Wn);
+        # need some form of normalizing this result;
+        # considering we have a certain number of inputs, we will
+        # use that for normalizing the vector products;
+        xNormFactor=self.Xn.size;
+        self.output=self.output/xNormFactor;
+        print(self.output);
         a=raw_input("run further?");
         if a=='y':
             pass
