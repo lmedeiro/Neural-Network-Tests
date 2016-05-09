@@ -41,7 +41,8 @@ The algorithm for this simple, backpropagation, perceptron based NN is as follow
 # sigmoid prime: np.exp(-z)/((1+np.exp(-z))**2);
 
 import numpy as np;
-from Neuron import Neuron
+from Neuron import Neuron;
+from threading import Thread;
 #from scipy import optimize;
 
 class NeuralNetwork(object):
@@ -57,35 +58,37 @@ class NeuralNetwork(object):
     def feedForward(self,X,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         # Must feed information forward;
         self.Xn=X;
-        # Wn= weights for each input;
-        # Wn will be different for each neuron that is at its end;
-        # The weight themselves will vary between the different 
-        # layers. Thus, we will have have varying numbers per layer;
-        # To begin, only one layer will be executed. Once this base case is 
-        # mastered, N layers will be adapted on the code. 
-        self.Wn=np.random.randn(X.size,numberOfNeuronsPerLayer)*.1;
-        self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
-        #print(" shape of Wn" );
-        #print(self.Wn.shape);
-        #print("shape of Xn");
-        #print(self.Xn.shape);
+        self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
+        
         self.neuronN=[];
-        # bias will be denoted as N=number of Neurons per layer -> Rows;
-        # vs M= number of hidden layers -> columns;
-        self.bias=np.random.randn(numberOfNeuronsPerLayer);
-        self.bias=np.absolute(self.bias);
         
-        for k in range(numberOfNeuronsPerLayer):
-            self.neuronN.append(Neuron(self.Xn,self.Wn[:,k],self.bias[k]))
-            self.neuronN[k].sumInputs();
-            self.neuronN[k].sigmoid(); 
-            
-        # The neuronN[k].y will contain the output information coming 
-        # from the sigmoid function;
+        for _ in range(numberOfNeuronsPerLayer):
+            self.neuronN.append(Neuron());
         
-            
+        print(" number of neuron: %d"%len(self.neuronN));
+        t=[];
+        
+        for r in range(self.numberOfNeuronsPerLayer):
+            t.append(Thread(target=self.processFeed, name=r,args=(r,)));
+            t[r].start();
+        
+        
+        
+        #for item in t:
+        #    item.join();
+        
         
         return self.neuronN;
+    
+    def processFeed(self,k):
+    
+        self.neuronN[k].sumInputs(self.Xn);
+        self.neuronN[k].sigmoid();
+        print("processed thread %d"%k);
+            
+        
+        return 0;
+    
     
     def feedBack (self,error):
         # will feed the error;
