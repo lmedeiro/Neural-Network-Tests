@@ -47,32 +47,28 @@ from Neuron import Neuron
 class NeuralNetwork(object):
     # This is the constructor;
     
-    def __init__(self,X=0):
-        print("Constructor called;");
-        #self.bias=1;
-        if X==None or X==0:
-            print("X=0 or NONE");
-        else:
-            print(X);
+    def __init__(self):
+        print("NeuralNetwork Constructor called;");
         
-        #self.Wn=np.array([],np.uint8);
-        #self.Xn=np.array([],np.uint8);
-        #self.neuronN=Neuron();
         
         
         
     
     def feedForward(self,X,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         # Must feed information forward;
-        
+        self.Xn=X;
+        #self.Xn=self.Xn.T;
         # Wn= weights for each input;
         # Wn will be different for each neuron that is at its end;
         # The weight themselves will vary between the different 
         # layers. Thus, we will have have varying numbers per layer;
         # To begin, only one layer will be executed. Once this base case is 
         # mastered, N layers will be adapted on the code. 
-        self.Wn=np.random.randn(X.size,numberOfNeuronsPerLayer);
-        self.Xn=X;
+        self.Wn=np.random.randn(X.size,numberOfNeuronsPerLayer)*.01;
+        #print(" shape of Wn" );
+        #print(self.Wn.shape);
+        #print("shape of Xn");
+        #print(self.Xn.shape);
         self.neuronN=[];
         # bias will be denoted as N=number of Neurons per layer -> Rows;
         # vs M= number of hidden layers -> columns;
@@ -81,7 +77,10 @@ class NeuralNetwork(object):
         for k in range(numberOfNeuronsPerLayer):
             self.neuronN.append(Neuron(self.Xn,self.Wn[:,k],self.bias[k]))
             self.neuronN[k].sumInputs();
-            self.neuronN[k].sigmoid();
+            self.neuronN[k].sigmoid(); 
+            
+        # The neuronN[k].y will contain the output information coming 
+        # from the sigmoid function;
         
             
         
@@ -93,12 +92,6 @@ class NeuralNetwork(object):
     
     
     
-          
 
-
-N=NeuralNetwork([2,3,4]);    
-print ("working");    
-    
-    
     
     

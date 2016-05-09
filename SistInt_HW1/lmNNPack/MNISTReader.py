@@ -28,9 +28,9 @@
 '''
 
 import numpy as np;
-import matplotlib.pyplot as plt;
 
-import time;
+
+
 
 class MNISTReader(object):
     
@@ -47,7 +47,7 @@ class MNISTReader(object):
     def readFile(self):
         # takes care of reading the file and setting everything
         # to its proper array;
-        f=open('images/train-labels.idx1-ubyte','r');
+        f=open('lmNNPack/images/train-labels.idx1-ubyte','r');
         
         self.labelHeader.append(f.read(4));
         self.labelHeader.append(f.read(4));
@@ -65,7 +65,7 @@ class MNISTReader(object):
         f.close();
         
         # open the img test file;
-        imgFile=open('images/train-images.idx3-ubyte','rb');
+        imgFile=open('lmNNPack/images/train-images.idx3-ubyte','rb');
         
         #-------------------------------------------------
         # Setting the imgHeaders to readable characters;
@@ -103,7 +103,7 @@ class MNISTReader(object):
 #-------------------------------------------------
 #    Area to test the class;
 #-------------------------------------------------
-
+'''
 t = time.time()
 A=MNISTReader();
 imgs=A.readFile();
@@ -116,3 +116,4 @@ img.shape=(28,28);
 plt.imshow(img,cmap='gray');
 plt.show();
 
+'''
