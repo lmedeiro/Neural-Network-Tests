@@ -20,20 +20,13 @@ A=MNISTReader.MNISTReader();
 imgs=A.readFile();
 NN=NeuralNet.NeuralNetwork();
 t = time.time()
-for k in range(1):
+for k in range(10000):
     NN.feedForward(imgs[k*784:(k+1)*784]);
+    #NN.networkResponse();
 #NN.feedForward(imgs);
 NN.networkResponse();
 print("Ending main Thread" );
 
 elapsed = time.time() - t;
 print ("elapsed time %f"%elapsed);
-#neuronOutputs=NN.neuronN[1];
-#print(neuronOutputs);
-#imgs=imgs[:];
-#print(imgs.size);
-#b=np.ones([imgs.size,1],np.uint8)*0.5;
 
-#c=np.dot(imgs.T,b);
-#cNormalized=c/imgs.size;
-#print(cNormalized);

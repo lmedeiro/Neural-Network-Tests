@@ -7,7 +7,16 @@ class Neuron(object):
         print('initiated neuron');
         #self.Xn=np.array(X);
         #self.Wn=np.array(W);
-        
+        # Wn= weights for each input;
+        # Wn will be different for each neuron that is at its end;
+        # The weight themselves will vary between the different 
+        # layers. Thus, we will have have varying numbers per layer;
+        # To begin, only one layer will be executed. Once this base case is 
+        # mastered, N layers will be adapted on the code. 
+        self.Wn=np.random.randn(784)*.1;
+        self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
+        self.bias=np.random.randn(1);
+        self.bias=np.absolute(self.bias)*0.1;
         
     
     def sumInputs(self,X):
@@ -15,16 +24,9 @@ class Neuron(object):
         # bias will be denoted as N=number of Neurons per layer -> Rows;
         # vs M= number of hidden layers -> columns;
         self.Xn=np.array(X);
-        self.bias=np.random.randn(1);
-        self.bias=np.absolute(self.bias)*0.1;
-        # Wn= weights for each input;
-        # Wn will be different for each neuron that is at its end;
-        # The weight themselves will vary between the different 
-        # layers. Thus, we will have have varying numbers per layer;
-        # To begin, only one layer will be executed. Once this base case is 
-        # mastered, N layers will be adapted on the code. 
-        self.Wn=np.random.randn(X.size)*.1;
-        self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
+        self.Xn=self.Xn/np.amax(self.Xn,axis=0);
+        
+        
         
         
         
@@ -32,8 +34,8 @@ class Neuron(object):
         # need some form of normalizing this result;
         # considering we have a certain number of inputs, we will
         # use that for normalizing the vector products;
-        xNormFactor=self.Xn.size;
-        self.output=self.output/xNormFactor;
+        #xNormFactor=self.Xn.size; # must update the normalization method;
+        #self.output=self.output/xNormFactor;
         '''
         print(self.output);
         a=raw_input("run further?");
