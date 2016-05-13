@@ -12,19 +12,27 @@ class Neuron(object):
         # The weight themselves will vary between the different 
         # layers. Thus, we will have have varying numbers per layer;
         # To begin, only one layer will be executed. Once this base case is 
-        # mastered, N layers will be adapted on the code. 
-        self.Wn=np.random.randn(784)*.1;
-        self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
-        self.bias=np.random.randn(1);
-        self.bias=np.absolute(self.bias)*0.1;
+        # mastered, N layers will be adapted on the code.
+        imgSize=784; 
+        #self.Wn=np.random.randn(imgSize)/np.sqrt(imgSize);
+        self.Wn=np.random.randn(imgSize)*0.1;
+        # the above statement also calibrates the weights;
+        #self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
+        self.bias=np.random.randn(1)*0.1;
+        #self.bias=np.absolute(self.bias)*0.1;
         
     
     def sumInputs(self,X):
         # take all of the inputs and sum them together;
         # bias will be denoted as N=number of Neurons per layer -> Rows;
         # vs M= number of hidden layers -> columns;
-        self.Xn=np.array(X);
-        self.Xn=self.Xn/np.amax(self.Xn,axis=0);
+        self.Xn=np.array(X,dtype=float);
+        # normalizing the input to the max; 
+        self.Xn/=np.std(self.Xn,axis=0);
+        #self.Xn=self.Xn/np.amax(self.Xn,axis=0);
+        # mean subtraction: 
+        #self.Xn-=np.mean(self.Xn,axis=0);
+        
         
         
         
@@ -53,6 +61,12 @@ class Neuron(object):
         self.y=1/(1+np.exp(-self.output));
         #print(self.y);
         return self.y;
+    
+    # cannot be called before sigmoid;
+    def sigmoidPrime(self):
+        #Gradient of sigmoid
+        return np.exp(-self.output)/((1+np.exp(-self.output))**2);
+    
     
     def stepOutput(self,desiredInput):
         # function defining the step output;

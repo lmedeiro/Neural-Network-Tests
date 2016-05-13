@@ -20,7 +20,7 @@ A=MNISTReader.MNISTReader();
 imgs=A.readFile();
 NN=NeuralNet.NeuralNetwork();
 t = time.time()
-for k in range(10000):
+for k in range(1):
     NN.feedForward(imgs[k*784:(k+1)*784]);
     #NN.networkResponse();
 #NN.feedForward(imgs);

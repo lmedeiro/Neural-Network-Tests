@@ -97,14 +97,20 @@ class NeuralNetwork(object):
         maxResponse=max(response.iteritems(), key=operator.itemgetter(1))[0]    
         print("highest neuron %d"%maxResponse);
         print(response);
-        #print(self.neuronN[0].y);
+        #print(self.neuronN[3].output);
         return maxResponse;
         
-    def feedBack (self,error):
+    def feedBack (self,netResponse):
         # will feed the error;
+        
+        error=self.calculateError(netResponse);
+        newWn=self.calculateNewWn(error);
+        self.updateNewWn(newWn);
+        
+        
         return 0;
     
-    
+        
     
 
     
