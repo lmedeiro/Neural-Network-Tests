@@ -1,8 +1,9 @@
-
+#from lmNNPack.NeuralNet import NeuralNetwork
+from lmNNPack import *;
 
 class Trainer(object):
     
-    def __init__(self,trainingSamples,paramEpochs):
+    def __init__(self,paramEpochs,trainingSamples=0):
         self.tSamples=trainingSamples;
         self.epochs=paramEpochs;
     
@@ -11,8 +12,17 @@ class Trainer(object):
      feeding information backward, analyzing error,
     '''
          
-    def train(self):
+    def train(self, NeuralNetwork):
+        self.NN=NeuralNetwork;
+        
+        return 0;
+    
+    def setupTraining(self):
+        A=MNISTReader.MNISTReader();
+        imgs=A.readFile();
+        labels=A.getLabels();
         
         
         return 0;
+        
         

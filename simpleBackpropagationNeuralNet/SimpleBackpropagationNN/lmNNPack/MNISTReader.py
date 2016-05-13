@@ -98,7 +98,10 @@ class MNISTReader(object):
         self.imgs=np.fromstring(self.rawIMG,np.uint8);
         
         return self.imgs;
-
+    
+    # getter for the labels;
+    def getLabels(self):
+        return self.labels;
 
 #-------------------------------------------------
 #    Area to test the class;

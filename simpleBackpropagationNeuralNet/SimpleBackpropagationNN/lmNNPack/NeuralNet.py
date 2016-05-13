@@ -55,6 +55,7 @@ class NeuralNetwork(object):
     def __init__(self,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         print("NeuralNetwork Constructor called;");
         self.neuronN=[];
+        self.lRate=0.01; # learning rate eta;
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
         
         for _ in range(self.numberOfNeuronsPerLayer):
@@ -95,15 +96,15 @@ class NeuralNetwork(object):
         for r in range(self.numberOfNeuronsPerLayer):
             response.update({r : self.neuronN[r].y});
         maxResponse=max(response.iteritems(), key=operator.itemgetter(1))[0]    
-        print("highest neuron %d"%maxResponse);
+        print("highest neuron/ response %d"%maxResponse);
         print(response);
         #print(self.neuronN[3].output);
         return maxResponse;
         
-    def feedBack (self,netResponse):
+    def feedBack (self,expected,netResponse):
         # will feed the error;
         
-        error=self.calculateError(netResponse);
+        error=self.calculateSquareError(expected,netResponse);
         newWn=self.calculateNewWn(error);
         self.updateNewWn(newWn);
         
@@ -111,7 +112,15 @@ class NeuralNetwork(object):
         return 0;
     
         
-    
+    def calculateSquareError(self,expected,response):
+        
+        errorSquared=1/2*(expected-response)**2;
+        
+        return errorSquared;
+        
 
-    
+    def calculateNewWn(self,newWn):
+        
+        
+        return 0;
     

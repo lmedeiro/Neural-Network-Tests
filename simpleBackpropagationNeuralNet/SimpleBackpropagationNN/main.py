@@ -18,6 +18,9 @@ plt.show();
 '''
 A=MNISTReader.MNISTReader();
 imgs=A.readFile();
+labels=A.getLabels();
+print(labels[0:20]);
+print(labels.size);
 NN=NeuralNet.NeuralNetwork();
 t = time.time()
 for k in range(1):
