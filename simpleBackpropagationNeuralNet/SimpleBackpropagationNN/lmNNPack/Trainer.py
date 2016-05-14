@@ -1,9 +1,10 @@
-#from lmNNPack.NeuralNet import NeuralNetwork
+#from lmNNPack.NeuralNet import NeuralNetwork;
+#from lmNNPack.NeuralNet import MNISTReader;
 from lmNNPack import *;
 
 class Trainer(object):
     
-    def __init__(self,paramEpochs,trainingSamples=0):
+    def __init__(self,paramEpochs=0,trainingSamples=0):
         self.tSamples=trainingSamples;
         self.epochs=paramEpochs;
     

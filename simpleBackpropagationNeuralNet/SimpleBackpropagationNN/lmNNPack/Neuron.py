@@ -4,7 +4,7 @@ class Neuron(object):
     def __init__(self):
         # setup the neuron here;          
         #self.output=np.array(self.output,[]);
-        print('initiated neuron');
+        #print('initiated neuron');
         #self.Xn=np.array(X);
         #self.Wn=np.array(W);
         # Wn= weights for each input;
@@ -65,7 +65,8 @@ class Neuron(object):
     # cannot be called before sigmoid;
     def sigmoidPrime(self):
         #Gradient of sigmoid
-        return np.exp(-self.output)/((1+np.exp(-self.output))**2);
+        self.outputPrime=np.exp(-self.output)/((1+np.exp(-self.output))**2);
+        return self.outputPrime;
     
     
     def stepOutput(self,desiredInput):

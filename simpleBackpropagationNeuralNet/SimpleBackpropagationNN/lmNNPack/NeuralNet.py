@@ -53,14 +53,14 @@ class NeuralNetwork(object):
     # This is the constructor;
     
     def __init__(self,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
-        print("NeuralNetwork Constructor called;");
+        #print("NeuralNetwork Constructor called;");
         self.neuronN=[];
-        self.lRate=0.01; # learning rate eta;
+        self.eta=0.01; # learning rate eta;
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
         
         for _ in range(self.numberOfNeuronsPerLayer):
             self.neuronN.append(Neuron());
-        print(" number of neuron: %d"%len(self.neuronN));
+        #print(" number of neuron: %d"%len(self.neuronN));
     
     def feedForward(self,X):
         # Must feed information forward;
@@ -87,6 +87,7 @@ class NeuralNetwork(object):
     
         self.neuronN[k].sumInputs(self.Xn);
         self.neuronN[k].sigmoid();
+        self.neuronN[k].sigmoidPrime();
         
         
         return 0;
@@ -96,17 +97,27 @@ class NeuralNetwork(object):
         for r in range(self.numberOfNeuronsPerLayer):
             response.update({r : self.neuronN[r].y});
         maxResponse=max(response.iteritems(), key=operator.itemgetter(1))[0]    
-        print("highest neuron/ response %d"%maxResponse);
-        print(response);
+        #print("highest neuron/ response %d"%maxResponse);
+        #print(response);
         #print(self.neuronN[3].output);
         return maxResponse;
         
     def feedBack (self,expected,netResponse):
         # will feed the error;
         
-        error=self.calculateSquareError(expected,netResponse);
-        newWn=self.calculateNewWn(error);
-        self.updateNewWn(newWn);
+        error=self.calculateError(expected,netResponse);
+        print("error: %d"%error);
+        # parallel update of the weights;
+        t=[];
+        for r in range(self.numberOfNeuronsPerLayer):
+            t.append(Thread(target=self.calculateNewWn, name=r,args=(r,error,)));
+            #t.append(multiprocessing.Process(target=self.processFeed, name=r,args=(r,)));
+            t[r].start();
+        
+        
+        
+        for item in t:
+            item.join();
         
         
         return 0;
@@ -118,9 +129,23 @@ class NeuralNetwork(object):
         
         return errorSquared;
         
-
-    def calculateNewWn(self,newWn):
+    def calculateError(self,expected,response):
+        error=expected-response;
         
         
-        return 0;
+        return error;
+    
+    def calculateNewWn(self,k,error):
+        
+        #for k in range(len(self.neuronN)):
+        A=self.eta*error;
+        A=np.multiply(-(A),self.neuronN[k].outputPrime);
+        B=self.neuronN[k].Xn;
+        C=np.multiply(A,B);
+        #print("neuron k: %d"%k);
+        #print(self.neuronN[k].Wn);
+        self.neuronN[k].Wn=np.subtract(self.neuronN[k].Wn,C);
+        
+        
+        #return self.neuronN[k].Wn;
     

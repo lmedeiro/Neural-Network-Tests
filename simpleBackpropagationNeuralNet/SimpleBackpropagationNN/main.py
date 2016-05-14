@@ -19,17 +19,20 @@ plt.show();
 A=MNISTReader.MNISTReader();
 imgs=A.readFile();
 labels=A.getLabels();
-print(labels[0:20]);
-print(labels.size);
+#print(labels[0:200]);
+#print(labels.size);
 NN=NeuralNet.NeuralNetwork();
-t = time.time()
-for k in range(1):
+t = time.time();
+a=0;
+for k in range(20):
     NN.feedForward(imgs[k*784:(k+1)*784]);
+    a=NN.networkResponse();
+    NN.feedBack(labels[k],a);
     #NN.networkResponse();
 #NN.feedForward(imgs);
 NN.networkResponse();
-print("Ending main Thread" );
+#print("Ending main Thread" );
 
 elapsed = time.time() - t;
-print ("elapsed time %f"%elapsed);
+#print ("elapsed time %f"%elapsed);
 
