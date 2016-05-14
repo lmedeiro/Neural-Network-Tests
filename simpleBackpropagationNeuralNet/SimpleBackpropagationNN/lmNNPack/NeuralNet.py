@@ -104,9 +104,9 @@ class NeuralNetwork(object):
         
     def feedBack (self,expected,netResponse):
         # will feed the error;
-        
+        #self.netResponse=netResponse;
         error=self.calculateError(expected,netResponse);
-        print("error: %d"%error);
+        #print("error: %d"%error);
         # parallel update of the weights;
         t=[];
         for r in range(self.numberOfNeuronsPerLayer):
@@ -120,8 +120,28 @@ class NeuralNetwork(object):
             item.join();
         
         
-        return 0;
-    
+        return error;
+    def calculateNewWn(self,k,error):
+        
+        # expected to be calculated in separate threads;
+        
+        A=error;
+        A=np.multiply(-(self.eta*A),self.neuronN[k].outputPrime);
+        #print(A);
+        B=self.neuronN[k].Xn;
+        #print("from calculateNewWn: ");
+        #print(B);
+        
+        C=np.multiply(A,B);
+        #print(C[500:550]);
+        #print("neuron k: %d"%k);
+        #print(self.neuronN[k].Wn);
+        
+        newWn=np.subtract(self.neuronN[k].Wn,C);
+        
+        self.neuronN[k].setWn(newWn);
+        
+        #return self.neuronN[k].Wn;
         
     def calculateSquareError(self,expected,response):
         
@@ -131,21 +151,14 @@ class NeuralNetwork(object):
         
     def calculateError(self,expected,response):
         error=expected-response;
-        
+        #error=self.error;
         
         return error;
+    def getNeuronN(self,n):
+        return self.neuronN[n];
+        
+        
     
-    def calculateNewWn(self,k,error):
-        
-        #for k in range(len(self.neuronN)):
-        A=self.eta*error;
-        A=np.multiply(-(A),self.neuronN[k].outputPrime);
-        B=self.neuronN[k].Xn;
-        C=np.multiply(A,B);
-        #print("neuron k: %d"%k);
-        #print(self.neuronN[k].Wn);
-        self.neuronN[k].Wn=np.subtract(self.neuronN[k].Wn,C);
-        
-        
-        #return self.neuronN[k].Wn;
+   
+    
     

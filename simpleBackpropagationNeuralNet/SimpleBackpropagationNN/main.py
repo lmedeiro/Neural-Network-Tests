@@ -24,15 +24,44 @@ labels=A.getLabels();
 NN=NeuralNet.NeuralNetwork();
 t = time.time();
 a=0;
-for k in range(20):
+test=0;
+
+epoch1=20000;
+epoch2=2*epoch1;
+eList=np.zeros(epoch2);
+for k in range(epoch1):
     NN.feedForward(imgs[k*784:(k+1)*784]);
     a=NN.networkResponse();
-    NN.feedBack(labels[k],a);
-    #NN.networkResponse();
-#NN.feedForward(imgs);
-NN.networkResponse();
+    #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
+    
+    
+    eList[k]=eList[k]+(NN.feedBack(labels[k],a)==0);
+    
+    
+    #testB=np.sum(NN.getNeuronN(1).Wn[100:600]);
+    #test=np.subtract(testA,testB);
+    #print(test)
+    
+totalError=1-float(np.sum(eList))/float(len(eList));
+print("total error1 : %f"%totalError);
+print ("k= %d"%k);
+#eList=[];
+while k <epoch2:
+    NN.feedForward(imgs[k*784:(k+1)*784]);
+    a=NN.networkResponse();
+    #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
+    
+    
+    eList[k]=eList[k]+(NN.feedBack(labels[k],a)==0);
+    
+    k=k+1;
+    
+    
+totalError=1-float(np.sum(eList[epoch2-epoch1:epoch2]))/float(len(eList));
+print("total error 2: %f"%totalError);
+
 #print("Ending main Thread" );
 
 elapsed = time.time() - t;
-#print ("elapsed time %f"%elapsed);
+print ("elapsed time %f"%elapsed);
 

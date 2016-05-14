@@ -29,6 +29,8 @@ class Neuron(object):
         self.Xn=np.array(X,dtype=float);
         # normalizing the input to the max; 
         self.Xn/=np.std(self.Xn,axis=0);
+        #print("from sumInputs:");
+        #print(self.Xn);
         #self.Xn=self.Xn/np.amax(self.Xn,axis=0);
         # mean subtraction: 
         #self.Xn-=np.mean(self.Xn,axis=0);
@@ -68,7 +70,11 @@ class Neuron(object):
         self.outputPrime=np.exp(-self.output)/((1+np.exp(-self.output))**2);
         return self.outputPrime;
     
-    
+    def setWn(self,newWn):
+        
+        self.Wn=newWn;
+        return 0;
+        
     def stepOutput(self,desiredInput):
         # function defining the step output;
         # if sigmoid is not used, than step may be used;
