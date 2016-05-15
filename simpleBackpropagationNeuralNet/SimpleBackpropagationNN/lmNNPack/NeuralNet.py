@@ -68,7 +68,7 @@ class NeuralNetwork(object):
         
         
         t=[];
-        
+        r=0;
         for r in range(self.numberOfNeuronsPerLayer):
             t.append(Thread(target=self.processFeed, name=r,args=(r,)));
             #t.append(multiprocessing.Process(target=self.processFeed, name=r,args=(r,)));
@@ -87,8 +87,8 @@ class NeuralNetwork(object):
     
         self.neuronN[k].sumInputs(self.Xn);
         self.neuronN[k].sigmoid();
-        self.neuronN[k].sigmoidPrime();
-        
+        #self.neuronN[k].sigmoidPrime();
+        #self.neuronN[k].processInfo(self.Xn);
         
         return 0;
     
@@ -96,6 +96,7 @@ class NeuralNetwork(object):
         response={};
         for r in range(self.numberOfNeuronsPerLayer):
             response.update({r : self.neuronN[r].y});
+        #print(type(self.neuronN[r].y));
         maxResponse=max(response.iteritems(), key=operator.itemgetter(1))[0]    
         #print("highest neuron/ response %d"%maxResponse);
         #print(response);
@@ -106,8 +107,10 @@ class NeuralNetwork(object):
         # will feed the error;
         #self.netResponse=netResponse;
         error=self.calculateError(expected,netResponse);
+        self.error=error;
         #print("error: %d"%error);
         # parallel update of the weights;
+        r=0;
         t=[];
         for r in range(self.numberOfNeuronsPerLayer):
             t.append(Thread(target=self.calculateNewWn, name=r,args=(r,error,)));
@@ -126,31 +129,36 @@ class NeuralNetwork(object):
         # expected to be calculated in separate threads;
         
         A=error;
-        A=np.multiply(-(self.eta*A),self.neuronN[k].outputPrime);
+        #A=self.calculateSquareError();
+        #A=A;
+        #A=np.multiply(-(A),self.neuronN[k].outputPrime);
         #print(A);
         B=self.neuronN[k].Xn;
         #print("from calculateNewWn: ");
         #print(B);
         
         C=np.multiply(A,B);
+        C=np.multiply(C,self.eta);
         #print(C[500:550]);
         #print("neuron k: %d"%k);
         #print(self.neuronN[k].Wn);
-        
+        newBias=np.subtract(self.neuronN[k].bias,self.eta*A);
         newWn=np.subtract(self.neuronN[k].Wn,C);
         
         self.neuronN[k].setWn(newWn);
+        #self.neuronN[k].setBias(newBias);
         
         #return self.neuronN[k].Wn;
         
-    def calculateSquareError(self,expected,response):
+    def calculateSquareError(self):
         
-        errorSquared=1/2*(expected-response)**2;
+        errorSquared=0.5*(self.error)**2.0;
         
         return errorSquared;
         
     def calculateError(self,expected,response):
         error=expected-response;
+        error=1.0*error;
         #error=self.error;
         
         return error;

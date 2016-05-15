@@ -23,45 +23,55 @@ labels=A.getLabels();
 #print(labels.size);
 NN=NeuralNet.NeuralNetwork();
 t = time.time();
-a=0;
-test=0;
 
-epoch1=20000;
-epoch2=2*epoch1;
-eList=np.zeros(epoch2);
-for k in range(epoch1):
-    NN.feedForward(imgs[k*784:(k+1)*784]);
-    a=NN.networkResponse();
-    #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
-    
-    
-    eList[k]=eList[k]+(NN.feedBack(labels[k],a)==0);
-    
-    
-    #testB=np.sum(NN.getNeuronN(1).Wn[100:600]);
-    #test=np.subtract(testA,testB);
-    #print(test)
-    
-totalError=1-float(np.sum(eList))/float(len(eList));
-print("total error1 : %f"%totalError);
-print ("k= %d"%k);
-#eList=[];
-while k <epoch2:
-    NN.feedForward(imgs[k*784:(k+1)*784]);
-    a=NN.networkResponse();
-    #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
-    
-    
-    eList[k]=eList[k]+(NN.feedBack(labels[k],a)==0);
-    
-    k=k+1;
-    
-    
-totalError=1-float(np.sum(eList[epoch2-epoch1:epoch2]))/float(len(eList));
-print("total error 2: %f"%totalError);
+numberOfImgs=3;
 
+eList1=np.zeros(numberOfImgs);
+#eList2=np.zeros(numberOfImgs);
+numberOfCycles=100;
+totalError=[];
+for _ in range(numberOfCycles):
+    eList1=np.zeros(numberOfImgs);
+    #eList2=np.zeros(numberOfImgs);
+    k=0;
+    for k in range(int(numberOfImgs)):
+        NN.feedForward(imgs[k*784:(k+1)*784]);
+        a=NN.networkResponse();
+        #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
+        #print("label: %d, netResponse: %d"%(labels[k],a));
+        
+        eList1[k]=eList1[k]+(NN.feedBack(labels[k],a)==0);
+        #print(eList1[k]);
+        
+        #testB=np.sum(NN.getNeuronN(1).Wn[100:600]);
+        #test=np.subtract(testA,testB);
+        #print(test)
+        
+    totalError.append(1-float(np.sum(eList1))/float(len(eList1)));
+    #print("total error1 : %f"%totalError);
+    #print ("k= %d"%k);
+    '''
+    k=0;
+    while k <numberOfImgs:
+        NN.feedForward(imgs[k*784:(k+1)*784]);
+        a=NN.networkResponse();
+        #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
+        
+        
+        eList2[k]=eList2[k]+(NN.feedBack(labels[k],a)==0);
+        
+        #r=r+1;
+        k=k+1;
+        
+        
+    totalError=1-float(np.sum(eList2))/float(len(eList2));
+    print("total error 2: %f"%totalError);
+    '''
 #print("Ending main Thread" );
 
 elapsed = time.time() - t;
 print ("elapsed time %f"%elapsed);
-
+#for item in totalError:
+#    print("total error1 : %f"%item);
+plt.plot(totalError);
+plt.show();

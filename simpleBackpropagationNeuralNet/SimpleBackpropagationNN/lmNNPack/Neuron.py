@@ -13,12 +13,14 @@ class Neuron(object):
         # layers. Thus, we will have have varying numbers per layer;
         # To begin, only one layer will be executed. Once this base case is 
         # mastered, N layers will be adapted on the code.
-        imgSize=784; 
+        imgSize=784;
         #self.Wn=np.random.randn(imgSize)/np.sqrt(imgSize);
         self.Wn=np.random.randn(imgSize)*0.1;
         # the above statement also calibrates the weights;
         #self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
         self.bias=np.random.randn(1)*0.1;
+        #self.bias=0
+        #print(self.bias);
         #self.bias=np.absolute(self.bias)*0.1;
         
     
@@ -27,20 +29,25 @@ class Neuron(object):
         # bias will be denoted as N=number of Neurons per layer -> Rows;
         # vs M= number of hidden layers -> columns;
         self.Xn=np.array(X,dtype=float);
-        # normalizing the input to the max; 
-        self.Xn/=np.std(self.Xn,axis=0);
+        # normalizing the input 
+        self.Xn=np.divide(self.Xn,float(255));
+        #self.Xn=np.divide(self.Xn,np.std(self.Xn,axis=0));
         #print("from sumInputs:");
         #print(self.Xn);
         #self.Xn=self.Xn/np.amax(self.Xn,axis=0);
         # mean subtraction: 
         #self.Xn-=np.mean(self.Xn,axis=0);
         
-        
+        self.Wn=np.divide(self.Wn,np.std(self.Wn,axis=0));
         
         
         
         
         self.output=np.vdot(self.Xn,self.Wn);
+        #bias=np.array([self.bias]);
+        #print(bias);
+        self.output=np.add(self.output,self.bias[0]);
+        #self.output=np.add(self.output,self.bias);
         # need some form of normalizing this result;
         # considering we have a certain number of inputs, we will
         # use that for normalizing the vector products;
@@ -74,15 +81,20 @@ class Neuron(object):
         
         self.Wn=newWn;
         return 0;
+    
+    def setBias(self,newBias):
+        self.bias=newBias;
+        return 0;
         
     def stepOutput(self,desiredInput):
         # function defining the step output;
         # if sigmoid is not used, than step may be used;
         return 0;
     
-    def processInfo(self):
+    def processInfo(self,X):
         # process everything here;
-        Yout=self.sumInputs();
-        yFinal=self.sigmoid(Yout);
+        self.sumInputs(X);
+        yFinal=self.sigmoid();
+        self.sigmoidPrime();
         return yFinal;
     
