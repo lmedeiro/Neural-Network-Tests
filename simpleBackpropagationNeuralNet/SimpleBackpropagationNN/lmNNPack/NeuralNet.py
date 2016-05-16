@@ -55,7 +55,7 @@ class NeuralNetwork(object):
     def __init__(self,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         #print("NeuralNetwork Constructor called;");
         self.neuronN=[];
-        self.eta=0.01; # learning rate eta;
+        self.eta=0.05; # learning rate eta;
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
         #self.Xn=0;
         for _ in range(self.numberOfNeuronsPerLayer):
@@ -114,6 +114,8 @@ class NeuralNetwork(object):
         self.error=error;
         #print("error: %d"%error);
         # parallel update of the weights;
+        if error==0:
+            return 0;
         r=0;
         #self.calculateNewWn(netResponse, error);
         
@@ -150,7 +152,7 @@ class NeuralNetwork(object):
         #print(self.neuronN[k].Wn);
         newBias=np.subtract(self.neuronN[k].bias,self.eta*A);
         newWn=np.subtract(self.neuronN[k].Wn,C);
-        
+        #print(newWn);
         self.neuronN[k].setWn(newWn);
         self.neuronN[k].setBias(newBias);
         

@@ -2,7 +2,7 @@ import numpy as np;
 from lmNNPack import *;
 import matplotlib.pyplot as plt;
 import time;
-import pickle;
+#import pickle;
 
 '''
 t = time.time()
@@ -25,8 +25,8 @@ labels=A.getLabels();
 NN=NeuralNet.NeuralNetwork();
 t = time.time();
 #xor=np.array([[0,0],[0,1],[1,0],[1,1]])
-numberOfImgs=20;
-numberOfCycles=10;
+numberOfImgs=100;
+numberOfCycles=200;
 eList1=np.zeros(numberOfImgs);
 #eList2=np.zeros(numberOfImgs);
 
@@ -51,7 +51,7 @@ for _ in range(numberOfCycles):
         #test=np.subtract(testA,testB);
         #print(test)
         
-    totalError.append(1-float(np.sum(eList1))/float(len(eList1)));
+    totalError.append(0.5*(1-float(np.sum(eList1))/float(len(eList1)))**2);
     #print("total error1 : %f"%totalError);
     #print ("k= %d"%k);
     '''
@@ -78,11 +78,17 @@ print ("elapsed time %f"%elapsed);
 #for item in totalError:
 #    print("total error1 : %f"%item);
 
-#plt.plot(totalError);
-#plt.show();
-
 
 k=0;
+
+# Saving the variables to file;
 for k in range(10):
     np.savetxt("neuronWeights_%d.txt"%k,NN.neuronN[k].Wn,fmt='%2.7f',);
+    np.savetxt("neuronBias_%d.txt"%k,NN.neuronN[k].bias,fmt='%2.7f',);
 np.savetxt("errorStorage.txt",totalError,fmt='%2.7f');
+
+
+
+
+plt.plot(totalError);
+plt.show();

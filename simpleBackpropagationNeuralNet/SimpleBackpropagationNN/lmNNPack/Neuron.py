@@ -18,8 +18,8 @@ class Neuron(object):
         self.Wn=np.random.randn(imgSize)*0.1;
         # the above statement also calibrates the weights;
         #self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
-        self.bias=np.random.randn(1)*0.05;
-        self.counter=1.0;
+        self.bias=np.random.randn(1)*0.1;
+        #self.counter=1.0;
         #self.bias=0
         #print(self.bias);
         #self.bias=np.absolute(self.bias)*0.1;
@@ -39,15 +39,18 @@ class Neuron(object):
         # mean subtraction: 
         #self.Xn-=np.mean(self.Xn,axis=0);
         
-        self.Wn=np.divide(self.Wn,np.std(self.Wn,axis=0));
+        #self.Wn=np.divide(self.Wn,np.std(self.Wn,axis=0));
         
         
         
+        #print(self.Wn);
+        self.output=(np.vdot(self.Xn,self.Wn));
         
-        self.output=np.vdot(self.Xn,self.Wn);
+        #print(self.output);
         #bias=np.array([self.bias]);
-        #print(bias);
+        
         self.output=np.add(self.output,self.bias[0]);
+        #print(self.output);
         #self.output=self.output/self.counter;
         #self.counter=self.counter+1;
         #print(self.bias[0]);
@@ -72,6 +75,7 @@ class Neuron(object):
         # defining the sigmoid function which alllows output to be 
         # to be seen as a normalized 1 or -1 output;
         self.y=1/(1+np.exp(-self.output));
+        
         #print(self.y);
         return self.y;
     
@@ -82,6 +86,9 @@ class Neuron(object):
         return self.outputPrime;
     
     def setWn(self,newWn):
+        
+        
+        #self.Wn=np.divide(newWn,np.std(newWn,axis=0));
         
         self.Wn=newWn;
         return 0;
