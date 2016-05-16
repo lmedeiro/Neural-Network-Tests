@@ -2,6 +2,7 @@ import numpy as np;
 from lmNNPack import *;
 import matplotlib.pyplot as plt;
 import time;
+import pickle;
 
 '''
 t = time.time()
@@ -23,24 +24,27 @@ labels=A.getLabels();
 #print(labels.size);
 NN=NeuralNet.NeuralNetwork();
 t = time.time();
-
-numberOfImgs=3;
-
+#xor=np.array([[0,0],[0,1],[1,0],[1,1]])
+numberOfImgs=20;
+numberOfCycles=10;
 eList1=np.zeros(numberOfImgs);
 #eList2=np.zeros(numberOfImgs);
-numberOfCycles=100;
+
+
 totalError=[];
+squaredError=[];
 for _ in range(numberOfCycles):
     eList1=np.zeros(numberOfImgs);
     #eList2=np.zeros(numberOfImgs);
     k=0;
+    y=0;
     for k in range(int(numberOfImgs)):
         NN.feedForward(imgs[k*784:(k+1)*784]);
         a=NN.networkResponse();
         #testA=np.sum(NN.getNeuronN(1).Wn[100:600]);
         #print("label: %d, netResponse: %d"%(labels[k],a));
-        
-        eList1[k]=eList1[k]+(NN.feedBack(labels[k],a)==0);
+        y=NN.feedBack(labels[k],a);
+        eList1[k]=eList1[k]+(y==0);
         #print(eList1[k]);
         
         #testB=np.sum(NN.getNeuronN(1).Wn[100:600]);
@@ -73,5 +77,12 @@ elapsed = time.time() - t;
 print ("elapsed time %f"%elapsed);
 #for item in totalError:
 #    print("total error1 : %f"%item);
-plt.plot(totalError);
-plt.show();
+
+#plt.plot(totalError);
+#plt.show();
+
+
+k=0;
+for k in range(10):
+    np.savetxt("neuronWeights_%d.txt"%k,NN.neuronN[k].Wn,fmt='%2.7f',);
+np.savetxt("errorStorage.txt",totalError,fmt='%2.7f');

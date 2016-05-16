@@ -57,15 +57,18 @@ class NeuralNetwork(object):
         self.neuronN=[];
         self.eta=0.01; # learning rate eta;
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
-        
+        #self.Xn=0;
         for _ in range(self.numberOfNeuronsPerLayer):
             self.neuronN.append(Neuron());
         #print(" number of neuron: %d"%len(self.neuronN));
+        self.Xn=[];
     
     def feedForward(self,X):
         # Must feed information forward;
-        self.Xn=X;
-        
+        self.Xn=[];
+        for item in X:
+            self.Xn.append(item);
+        #print(len(self.Xn));
         
         t=[];
         r=0;
@@ -85,14 +88,15 @@ class NeuralNetwork(object):
     
     def processFeed(self,k):
     
-        self.neuronN[k].sumInputs(self.Xn);
-        self.neuronN[k].sigmoid();
+        #self.neuronN[k].sumInputs(self.Xn);
+        #self.neuronN[k].sigmoid();
         #self.neuronN[k].sigmoidPrime();
-        #self.neuronN[k].processInfo(self.Xn);
+        self.neuronN[k].processInfo(self.Xn);
         
         return 0;
     
     def networkResponse(self):
+        r=0;
         response={};
         for r in range(self.numberOfNeuronsPerLayer):
             response.update({r : self.neuronN[r].y});
@@ -111,6 +115,8 @@ class NeuralNetwork(object):
         #print("error: %d"%error);
         # parallel update of the weights;
         r=0;
+        #self.calculateNewWn(netResponse, error);
+        
         t=[];
         for r in range(self.numberOfNeuronsPerLayer):
             t.append(Thread(target=self.calculateNewWn, name=r,args=(r,error,)));
@@ -131,7 +137,7 @@ class NeuralNetwork(object):
         A=error;
         #A=self.calculateSquareError();
         #A=A;
-        #A=np.multiply(-(A),self.neuronN[k].outputPrime);
+        A=np.multiply(-(A),self.neuronN[k].outputPrime);
         #print(A);
         B=self.neuronN[k].Xn;
         #print("from calculateNewWn: ");
@@ -146,7 +152,7 @@ class NeuralNetwork(object):
         newWn=np.subtract(self.neuronN[k].Wn,C);
         
         self.neuronN[k].setWn(newWn);
-        #self.neuronN[k].setBias(newBias);
+        self.neuronN[k].setBias(newBias);
         
         #return self.neuronN[k].Wn;
         

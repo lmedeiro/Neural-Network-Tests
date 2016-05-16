@@ -18,7 +18,8 @@ class Neuron(object):
         self.Wn=np.random.randn(imgSize)*0.1;
         # the above statement also calibrates the weights;
         #self.Wn=np.absolute(self.Wn); # keeping the whole array positive;
-        self.bias=np.random.randn(1)*0.1;
+        self.bias=np.random.randn(1)*0.05;
+        self.counter=1.0;
         #self.bias=0
         #print(self.bias);
         #self.bias=np.absolute(self.bias)*0.1;
@@ -47,6 +48,9 @@ class Neuron(object):
         #bias=np.array([self.bias]);
         #print(bias);
         self.output=np.add(self.output,self.bias[0]);
+        #self.output=self.output/self.counter;
+        #self.counter=self.counter+1;
+        #print(self.bias[0]);
         #self.output=np.add(self.output,self.bias);
         # need some form of normalizing this result;
         # considering we have a certain number of inputs, we will
