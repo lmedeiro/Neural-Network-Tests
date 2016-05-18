@@ -55,11 +55,11 @@ class NeuralNetwork(object):
     def __init__(self,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         #print("NeuralNetwork Constructor called;");
         self.neuronN=[];
-        self.eta=0.05; # learning rate eta;
+        self.eta=0.01; # learning rate eta;
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
         #self.Xn=0;
-        for _ in range(self.numberOfNeuronsPerLayer):
-            self.neuronN.append(Neuron());
+        for ID in range(self.numberOfNeuronsPerLayer):
+            self.neuronN.append(Neuron(ID));
         #print(" number of neuron: %d"%len(self.neuronN));
         self.Xn=[];
     
@@ -99,47 +99,68 @@ class NeuralNetwork(object):
         r=0;
         response={};
         for r in range(self.numberOfNeuronsPerLayer):
-            response.update({r : self.neuronN[r].y});
+            response.update({ self.neuronN[r].ID : self.neuronN[self.neuronN[r].ID].y});
         #print(type(self.neuronN[r].y));
-        maxResponse=max(response.iteritems(), key=operator.itemgetter(1))[0]    
-        #print("highest neuron/ response %d"%maxResponse);
-        #print(response);
-        #print(self.neuronN[3].output);
-        return maxResponse;
+        maxResponse=max(response.iteritems(), key=operator.itemgetter(1));  
+        #print("highest neuron/ response %f"%float(maxResponse));
+        #print(maxResponse);
+    
+            
+        
+        return (maxResponse);
         
     def feedBack (self,expected,netResponse):
         # will feed the error;
         #self.netResponse=netResponse;
-        error=self.calculateError(expected,netResponse);
-        self.error=error;
-        #print("error: %d"%error);
+     
+     
         # parallel update of the weights;
-        if error==0:
-            return 0;
+  
         r=0;
-        #self.calculateNewWn(netResponse, error);
         
         t=[];
         for r in range(self.numberOfNeuronsPerLayer):
-            t.append(Thread(target=self.calculateNewWn, name=r,args=(r,error,)));
+            t.append(Thread(target=self.calculateNewWn, name=r,args=(r,expected,netResponse,)));
             #t.append(multiprocessing.Process(target=self.processFeed, name=r,args=(r,)));
             t[r].start();
-        
-        
-        
+           
         for item in t:
             item.join();
         
-        
-        return error;
-    def calculateNewWn(self,k,error):
-        
+        return self.error;
+    
+    
+    def calculateNewWn(self,k,expected,netResponse):
+        #netResponse[0] indicated the neuron fired with highest sigmoid;
+        # netResponse[1] indicates what was fired;
         # expected to be calculated in separate threads;
-        
+        # zero -> 0.4; one -> 0.8;  Only one should be 0.8 or above;
+        # the following case check to see if the current neuron has won
+        # and it has a number above 0.8, which is our desired response;
+        # if so, just return 0, and don't update the current neuron;
+        # otherwise, keep going;
+        if ( (k==expected) and (netResponse[0]==k) ):
+            print("inside a correct response");
+            if netResponse[1]>=0.8:
+                error=0;
+                self.error=error;
+                return error;
+            else: 
+                error=self.calculateError(0.8,netResponse[1]);
+                self.error=error;
+        else:
+            # otherwise, if it is not a winning neuron, 
+            # then the response should be below 0.4, calculated the error
+            # and update the neuron;
+            error=self.calculateError(0.4,netResponse[1]);
+            if ( (k!=expected) and (netResponse[0]==k) ):
+                self.error=error;
+
+        #print("error: %f"%error);
         A=error;
         #A=self.calculateSquareError();
         #A=A;
-        A=np.multiply(-(A),self.neuronN[k].outputPrime);
+        A=np.multiply((A),self.neuronN[k].outputPrime);
         #print(A);
         B=self.neuronN[k].Xn;
         #print("from calculateNewWn: ");
@@ -166,6 +187,7 @@ class NeuralNetwork(object):
         
     def calculateError(self,expected,response):
         error=expected-response;
+        #error=0.5*(expected-response)**2.0;
         error=1.0*error;
         #error=self.error;
         

@@ -1,7 +1,7 @@
 import numpy as np;
 class Neuron(object):
 
-    def __init__(self):
+    def __init__(self,ID):
         # setup the neuron here;          
         #self.output=np.array(self.output,[]);
         #print('initiated neuron');
@@ -13,6 +13,7 @@ class Neuron(object):
         # layers. Thus, we will have have varying numbers per layer;
         # To begin, only one layer will be executed. Once this base case is 
         # mastered, N layers will be adapted on the code.
+        self.ID=ID;
         imgSize=784;
         #self.Wn=np.random.randn(imgSize)/np.sqrt(imgSize);
         self.Wn=np.random.randn(imgSize)*0.1;
@@ -30,8 +31,15 @@ class Neuron(object):
         # bias will be denoted as N=number of Neurons per layer -> Rows;
         # vs M= number of hidden layers -> columns;
         self.Xn=np.array(X,dtype=float);
+        '''
+        for item in self.Xn:
+            if item>=50:
+                item=1;
+            else:
+                item=0;
+        '''
         # normalizing the input 
-        self.Xn=np.divide(self.Xn,float(255));
+        self.Xn=np.divide(self.Xn,float(np.amax(self.Xn,axis=0)));
         #self.Xn=np.divide(self.Xn,np.std(self.Xn,axis=0));
         #print("from sumInputs:");
         #print(self.Xn);
@@ -48,8 +56,8 @@ class Neuron(object):
         
         #print(self.output);
         #bias=np.array([self.bias]);
-        
         self.output=np.add(self.output,self.bias[0]);
+        #self.output=np.add(self.output,self.bias[0])/(self.Xn.size**2);
         #print(self.output);
         #self.output=self.output/self.counter;
         #self.counter=self.counter+1;
@@ -74,10 +82,10 @@ class Neuron(object):
     def sigmoid(self):
         # defining the sigmoid function which alllows output to be 
         # to be seen as a normalized 1 or -1 output;
-        self.y=1/(1+np.exp(-self.output));
+        self.y=1.0/(1.0+np.exp(-self.output));
         
         #print(self.y);
-        return self.y;
+        return float(self.y);
     
     # cannot be called before sigmoid;
     def sigmoidPrime(self):
@@ -89,8 +97,10 @@ class Neuron(object):
         
         
         #self.Wn=np.divide(newWn,np.std(newWn,axis=0));
-        
+        #print(self.Wn[200:210]);
+        #print(np.subtract(self.Wn,newWn)[200:210]);
         self.Wn=newWn;
+        #print(self.Wn[200:210]);
         return 0;
     
     def setBias(self,newBias):
