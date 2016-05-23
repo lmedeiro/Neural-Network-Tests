@@ -71,9 +71,9 @@ for i in range(len(eta)):
     '''
     # Saving the variables to file;
     for k in range(10):
-        np.savetxt("neuronWeights_%d.txt"%k,NN.neuronN[k].Wn,fmt='%2.7f',);
-        np.savetxt("neuronBias_%d.txt"%k,NN.neuronN[k].bias,fmt='%2.7f',);
-    np.savetxt("errorStorage.txt",totalError,fmt='%2.7f');
+        np.savetxt("vars/neuronWeights_%d.txt"%k,NN.neuronN[k].Wn,fmt='%2.7f',);
+        np.savetxt("vars/neuronBias_%d.txt"%k,NN.neuronN[k].bias,fmt='%2.7f',);
+    np.savetxt("vars/errorStorage.txt",totalError,fmt='%2.7f');
     '''
     
     
