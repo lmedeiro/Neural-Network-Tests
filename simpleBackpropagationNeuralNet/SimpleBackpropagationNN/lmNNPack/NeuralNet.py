@@ -55,7 +55,7 @@ class NeuralNetwork(object):
     def __init__(self,numberOfHiddenLayers=1,numberOfNeuronsPerLayer=10):
         #print("NeuralNetwork Constructor called;");
         self.neuronN=[];
-        self.eta=0.01; # learning rate eta;
+        self.eta=0.025; # learning rate eta;
         self.numberOfNeuronsPerLayer=numberOfNeuronsPerLayer;
         #self.Xn=0;
         for ID in range(self.numberOfNeuronsPerLayer):
@@ -139,20 +139,22 @@ class NeuralNetwork(object):
         # and it has a number above 0.8, which is our desired response;
         # if so, just return 0, and don't update the current neuron;
         # otherwise, keep going;
+        expectedLow=0.49;
+        expectedHigh=0.51;
         if ( (k==expected) and (netResponse[0]==k) ):
-            print("inside a correct response");
-            if netResponse[1]>=0.8:
+            #print("inside a correct response");
+            if netResponse[1]>=expectedHigh:
                 error=0;
                 self.error=error;
                 return error;
             else: 
-                error=self.calculateError(0.8,netResponse[1]);
+                error=self.calculateError(expectedHigh,netResponse[1]);
                 self.error=error;
         else:
             # otherwise, if it is not a winning neuron, 
             # then the response should be below 0.4, calculated the error
             # and update the neuron;
-            error=self.calculateError(0.4,netResponse[1]);
+            error=self.calculateError(expectedLow,netResponse[1]);
             if ( (k!=expected) and (netResponse[0]==k) ):
                 self.error=error;
 
@@ -195,6 +197,8 @@ class NeuralNetwork(object):
     def getNeuronN(self,n):
         return self.neuronN[n];
         
+    def setEta(self,eta):
+        self.eta=eta;
         
     
    
