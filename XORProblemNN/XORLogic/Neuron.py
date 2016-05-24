@@ -35,6 +35,9 @@ class Neuron(object):
         return 0;
     
     def processInfo(self,X):
+        self.sumInputs(X);
+        self.sigmoidOutput();
+        self.sigmoidPrimeOutput();        
         
-        return 0;
+        return self.y;
     
