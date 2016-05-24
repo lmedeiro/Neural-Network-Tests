@@ -17,7 +17,7 @@ class NeuralNetwork(object):
             self.neuronN[0].append(Neuron(ID,numberOfInputItems));
             ID=ID+1;
             
-        #del(neurons);
+        
         # setting up the hidden Layers list;
         for layers in range(numberOfHiddenLayers-1):
             self.neuronN.append([]);
@@ -69,10 +69,13 @@ class NeuralNetwork(object):
                     
         # output case, last layer: 
         layerInput=[];
+        neuron=0;
+        print("length of neuron %d"%(len(self.neuronN)));
         for input in range(self.numberOfNeuronsPerHiddenLayer):
-                    layerInput.append(self.neuronN[len(self.neuronN)-1][neuron].y);
+                    layerInput.append(self.neuronN[len(self.neuronN)-2][neuron].y);
+                    neuron+=1;
         for neuron in range(self.numberOfNeuronsOutput):
-            self.neuronN[len(self.neuronN)][neuron].processInfo(layerInput);
+            self.neuronN[len(self.neuronN)-1][neuron].processInfo(layerInput);
         
         return 0;
         
