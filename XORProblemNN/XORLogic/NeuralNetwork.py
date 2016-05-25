@@ -50,7 +50,7 @@ class NeuralNetwork(object):
         
         
     def feedForward(self,X):
-        self.Xn=X;
+        self.Xn=1.0*X;
         # base case with first layer:
         for neuron in range(self.numberOfNeuronsPerHiddenLayer):
             self.neuronN[0][neuron].processInfo(self.Xn);
@@ -78,7 +78,7 @@ class NeuralNetwork(object):
             self.neuronN[len(self.neuronN)-1][neuron].processInfo(layerInput);
         neuron=0;
         # argument to netResponse must have only one item;
-        self.netResponse(self.neuronN[len(self.neuronN)-1][neuron].y);
+        self.netResponsef(1.0*self.neuronN[len(self.neuronN)-1][neuron].y);
         
         
         return 0;
@@ -94,7 +94,7 @@ class NeuralNetwork(object):
         deltaWOutput=np.multiply(deltaWOutput,self.neuronN[len(self.neuronN)-1][neuron].Xn)
         
         newWOutput=np.subtract(self.neuronN[len(self.neuronN)-1][neuron].Wn,deltaWOutput);
-        newBiasOutput=self.neuronN[len(self.neuronN)-1][neuron].bias[0]-self.eta*self.error*self.neuronN[len(self.neuronN)-1][neuron].bias[0]
+        newBiasOutput=self.neuronN[len(self.neuronN)-1][neuron].bias-self.eta*self.error*self.neuronN[len(self.neuronN)-1][neuron].bias
         
         self.neuronN[len(self.neuronN)-1][neuron].setWn(newWOutput);
         self.neuronN[len(self.neuronN)-1][neuron].setBias(newBiasOutput);
@@ -111,8 +111,8 @@ class NeuralNetwork(object):
                     wkj=self.neuronN[len(self.neuronN)-k-1][0].Wn;
                 
                 sumDeltaWkj=np.sum(wkj*errorPrime);
-                wn=self.neuronN[len(self.neuronN)-k-2][neuron].Wn;
-                deltaHiddenWn=(np.multiply(wn,self.eta*self.neuronN[len(self.neuronN)-k-2][neuron].outputPrime*sumDeltaWkj));
+                xn=self.neuronN[len(self.neuronN)-k-2][neuron].Xn;
+                deltaHiddenWn=(np.multiply(xn,self.eta*self.neuronN[len(self.neuronN)-k-2][neuron].outputPrime*sumDeltaWkj));
                 
                 newWn=np.subtract(self.neuronN[len(self.neuronN)-k-2][neuron].Wn,deltaHiddenWn);
                 self.neuronN[len(self.neuronN)-k-2][neuron].setWn(newWn);
@@ -126,7 +126,7 @@ class NeuralNetwork(object):
         
     
     
-    def netResponse(self,response):
+    def netResponsef(self,response):
         self.sigmoidOut=response;
         if response>=0.5:
             self.netResponse=1;

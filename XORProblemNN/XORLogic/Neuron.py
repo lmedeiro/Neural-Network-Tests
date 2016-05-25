@@ -4,7 +4,7 @@ class Neuron(object):
     def __init__ (self,ID,numberOfInputs=2):
         self.ID=ID;
         self.Wn=np.random.randn(numberOfInputs);
-        self.bias=np.random.randn(1);
+        self.bias=np.random.randn(1)[0];
         self.output=0;
         
     def sumInputs(self,X):
@@ -14,7 +14,7 @@ class Neuron(object):
             self.Xn=np.divide(self.Xn,float(np.amax(self.Xn,axis=0)));
         
         self.output=np.vdot(self.Wn,self.Xn);
-        self.output=np.add(self.output,self.bias[0]);
+        self.output=np.add(self.output,self.bias);
         
         
         return self.output;
