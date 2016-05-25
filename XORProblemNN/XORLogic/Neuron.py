@@ -10,7 +10,9 @@ class Neuron(object):
     def sumInputs(self,X):
         # sum inputs;
         self.Xn=np.array(X,dtype=float);
-        self.Xn=np.divide(self.Xn,float(np.amax(self.Xn,axis=0)));
+        if np.amax(self.Xn,axis=0):
+            self.Xn=np.divide(self.Xn,float(np.amax(self.Xn,axis=0)));
+        
         self.output=np.vdot(self.Wn,self.Xn);
         self.output=np.add(self.output,self.bias[0]);
         
@@ -27,11 +29,15 @@ class Neuron(object):
         return self.outputPrime;
     
     def setWn(self,newWn):
-        
+        #print(self.Wn);
+        self.Wn=newWn;
+        #print(self.Wn);
         return 0;
     
     def setBias(self,newBias):
-        
+        #print(self.bias);
+        self.bias=newBias;
+        #print(self.bias);
         return 0;
     
     def processInfo(self,X):
