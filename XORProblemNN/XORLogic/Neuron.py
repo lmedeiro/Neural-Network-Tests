@@ -3,8 +3,8 @@ import numpy as np;
 class Neuron(object):
     def __init__ (self,ID,numberOfInputs=2):
         self.ID=ID;
-        self.Wn=np.random.randn(numberOfInputs);
-        self.bias=np.random.randn(1)[0];
+        self.Wn=np.random.randn(numberOfInputs)*0.1;
+        self.bias=np.random.randn(1)[0]*0.1;
         self.output=0;
         
     def sumInputs(self,X):
@@ -25,7 +25,8 @@ class Neuron(object):
         return self.y;
     
     def sigmoidPrimeOutput(self):
-        self.outputPrime=np.exp(-self.output)/((1+np.exp(-self.output))**2);
+        #self.outputPrime=np.exp(-self.output)/((1+np.exp(-self.output))**2);
+        self.outputPrime=self.y*(1-self.y);
         return self.outputPrime;
     
     def setWn(self,newWn):
