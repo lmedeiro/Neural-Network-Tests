@@ -11,7 +11,9 @@ class NeuralNetwork(object):
         self.numberOfNeuronsPerHiddenLayer=numberOfNeuronsPerHiddenLayer;
         self.eta=0.1;
         self.neuronN=[];
+        
         # treating input first;
+        
         self.neuronN.append([]);
         for neurons in range (numberOfNeuronsPerHiddenLayer):
             self.neuronN[0].append(Neuron(ID,numberOfInputItems));
@@ -51,6 +53,9 @@ class NeuralNetwork(object):
         
     def feedForward(self,X):
         self.Xn=1.0*X;
+        if np.amax(self.Xn,axis=0)!=0:
+            self.Xn=np.divide(self.Xn,float(np.amax(self.Xn,axis=0)));
+        
         # base case with first layer:
         for neuron in range(self.numberOfNeuronsPerHiddenLayer):
             self.neuronN[0][neuron].processInfo(self.Xn);
@@ -89,42 +94,46 @@ class NeuralNetwork(object):
         error=self.networkError(expected);
         squaredError=self.calculateSquareError();
         
-        error=error*(-1.0);
+        #error=error*(-1.0);
         neuron=0;
         # first update last layer with network error;
-        deltaWOutput=(self.eta*error*self.neuronN[len(self.neuronN)-1][neuron].outputPrime)
+        deltaWOutput=(self.eta*self.neuronN[len(self.neuronN)-1][neuron].error)
         deltaWOutput=np.multiply(deltaWOutput,self.neuronN[len(self.neuronN)-1][neuron].Xn)
         
-        newWOutput=np.subtract(self.neuronN[len(self.neuronN)-1][neuron].Wn,deltaWOutput);
-        newBiasOutput=np.subtract(self.neuronN[len(self.neuronN)-1][neuron].bias,self.eta*self.error*self.neuronN[len(self.neuronN)-1][neuron].bias);
+        newWOutput=np.add(self.neuronN[len(self.neuronN)-1][neuron].Wn,deltaWOutput);
+        
+        deltaBias=self.neuronN[len(self.neuronN)-1][neuron].error*self.eta*self.neuronN[len(self.neuronN)-1][neuron].bias;
+        newBiasOutput=np.add(self.neuronN[len(self.neuronN)-1][neuron].bias,deltaBias);
         
         self.neuronN[len(self.neuronN)-1][neuron].setWn(newWOutput);
         self.neuronN[len(self.neuronN)-1][neuron].setBias(newBiasOutput);
-        #self.neuronN[len(self.neuronN)-2][neuron]
+        
         errorPrime=error;
+        
         # Updates the hidden layers;
         k=0; 
         while k<self.numberOfHiddenLayers:
             
             
-            for neuron in range(self.numberOfNeuronsPerHiddenLayer):
+            for neuron in range(len(self.neuronN[len(self.neuronN)-k-2])):
                 
-                errorPrime=errorPrime*self.neuronN[len(self.neuronN)-k-2][neuron].outputPrime;
-                # given the current configuration, this code only works for 
-                # nets ending with one neuron and same number of neurons per hidden layer;
-                if (len(self.neuronN)-k-1)!=(len(self.neuronN)-1):
-                    wkj=self.neuronN[len(self.neuronN)-k-1][neuron].Wn[neuron];
-                else:
-                    wkj=self.neuronN[len(self.neuronN)-k-1][0].Wn[neuron];
+                errorPrime=[];
                 
-                deltaWkj= wkj*errorPrime;
+                nextNeuron=0;
+                while nextNeuron < (len(self.neuronN[len(self.neuronN)-k-1])):
+                    errorPrime.append(self.neuronN[len(self.neuronN)-k-1][nextNeuron].error*self.neuronN[len(self.neuronN)-k-1][nextNeuron].Wn[neuron]);
+                    nextNeuron+=1;
+                deltaWkj=np.sum(errorPrime);
+                #self.neuronN[len(self.neuronN)-k-2][neuron].setError(neuronError);
+
+                
                 xn=self.neuronN[len(self.neuronN)-k-2][neuron].Xn;
                 
-                deltaHiddenWn=(np.multiply(xn,self.eta*self.neuronN[len(self.neuronN)-k-2][neuron].outputPrime*deltaWkj));
-                deltaHiddenBias=(np.multiply(1,self.eta*self.neuronN[len(self.neuronN)-k-2][neuron].outputPrime*deltaWkj));
+                deltaHiddenWn=(np.multiply(xn,self.eta*deltaWkj));
+                deltaHiddenBias=(np.multiply(1,self.eta*deltaWkj));
                 
-                newWn=np.subtract(self.neuronN[len(self.neuronN)-k-2][neuron].Wn,deltaHiddenWn);
-                newBias=np.subtract(self.neuronN[len(self.neuronN)-k-2][neuron].bias,deltaHiddenBias);
+                newWn=np.add(self.neuronN[len(self.neuronN)-k-2][neuron].Wn,deltaHiddenWn);
+                newBias=np.add(self.neuronN[len(self.neuronN)-k-2][neuron].bias,deltaHiddenBias);
                 
                 self.neuronN[len(self.neuronN)-k-2][neuron].setWn(newWn);
                 self.neuronN[len(self.neuronN)-k-2][neuron].setBias(newBias);
@@ -139,32 +148,57 @@ class NeuralNetwork(object):
     
     
     def netResponsef(self,response):
+        
         self.sigmoidOut=response;
         if response>=0.5:
             self.netResponse=1;
         else:
             self.netResponse=0;
-            
+        
+        return self.netResponse;
+        
     def networkError(self,expected):
         
-        self.error=expected-self.netResponse;
-        '''
-        
+        #self.error=expected-self.netResponse;
+  
         if expected==0:
-            expected=0.40;
-            if expected>=self.sigmoidOut:
-                self.error=0;
+            expected=0.1;
+            #if expected>=self.sigmoidOut:
+            #    self.error=0;
                 #print("expected= %f, error: %f"%(expected,self.error));
-                return self.error;
+            #    return self.error;
+            
         elif expected==1:
-            expected=0.60;
-            if expected<=self.sigmoidOut:
-                self.error=0;
-                #print("expected: %f, error: %f"%(expected,self.error));
-                return self.error;
-        self.error=expected-self.sigmoidOut;
+            expected=0.9;
+            #if expected<=self.sigmoidOut:
+            #    self.error=0;
+            #    #print("expected: %f, error: %f"%(expected,self.error));
+            #    return self.error;
+        else:
+            print("something went wrong, exit");
+            exit();
+            
+        self.error=(expected-self.sigmoidOut);
+        
+        # setting error for output Layer of Neurons;
+        for neuron in range(len(self.neuronN[len(self.neuronN)-1])):
+            errorPrime=self.neuronN[len(self.neuronN)-1][neuron].outputPrime*self.error;
+            self.neuronN[len(self.neuronN)-1][neuron].setError(errorPrime);
+        
         #print("general expected: %f, error: %f"%(expected,self.error));
-        '''
+        
+        # setting up the error for the hidden layers;
+        for k in range (self.numberOfHiddenLayers):
+            
+            for neuron in range(len(self.neuronN[len(self.neuronN)-k-2])):
+                errorPrime=[];
+                nextNeuron=0;
+                while nextNeuron <(len(self.neuronN[len(self.neuronN)-k-1])):
+                    errorPrime.append(self.neuronN[len(self.neuronN)-k-2][neuron].outputPrime*self.neuronN[len(self.neuronN)-k-1][nextNeuron].error);
+                    nextNeuron+=1;
+                neuronError=np.sum(errorPrime);
+                self.neuronN[len(self.neuronN)-k-2][neuron].setError(neuronError);
+        
         
         return (self.error);
        

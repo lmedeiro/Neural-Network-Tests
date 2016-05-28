@@ -1,17 +1,19 @@
 import numpy as np;
-
+normFactor=0.1;
 class Neuron(object):
     def __init__ (self,ID,numberOfInputs=2):
         self.ID=ID;
-        self.Wn=np.random.randn(numberOfInputs)*0.1;
-        self.bias=np.random.randn(1)[0]*0.1;
+        self.Wn=np.random.randn(numberOfInputs)*normFactor;
+        #self.Wn=np.divide(self.Wn,numberOfInputs);
+        self.bias=np.random.randn(1)[0]*normFactor;
         self.output=0;
+        self.error=0;
         
     def sumInputs(self,X):
         # sum inputs;
         self.Xn=np.array(X,dtype=float);
-        if np.amax(self.Xn,axis=0):
-            self.Xn=np.divide(self.Xn,float(np.amax(self.Xn,axis=0)));
+        
+        #self.Wn=np.divide(self.Xn,len(self.Xn));
         
         self.output=np.vdot(self.Wn,self.Xn);
         self.output=np.add(self.output,self.bias);
@@ -40,11 +42,13 @@ class Neuron(object):
         self.bias=newBias;
         #print(self.bias);
         return 0;
-    
+    def setError(self,error):
+        self.error=error;
+        
     def processInfo(self,X):
         self.sumInputs(X);
         self.sigmoidOutput();
-        self.sigmoidPrimeOutput();        
+        self.sigmoidPrimeOutput()       
         
         return self.y;
     
